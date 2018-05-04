@@ -6,7 +6,6 @@ const socketIO = require('socket.io');
 const { generateMessage, generateLocationMessage } = require('./utils/message');
 const { isRealString } = require('./utils/validation');
 const {Users} = require('./utils/users');
-const { searchMessageForWeather } = require('./utils/nlp');
 
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
@@ -45,25 +44,6 @@ io.on('connection', (socket) => {
         var user = users.getUser(socket.id);
 
         if (user && isRealString(newMessage.text)) {
-            //aa
-            let returnMessageforWeather = new Promise((resolve, reject) => {
-
-                var message = newMessage.text;
-
-                searchMessageForWeather(message, function (callback) {
-                    if (callback === 'Request failed with status code 400' || callback.length === 0) {
-                        console.log('Error');
-                    } else {
-                        resolve(callback);
-                    }
-
-                });
-            });
-
-            returnMessageforWeather.then((successMessage) => {
-                io.to(user.room).emit('newMessage', generateMessage('Assistant', successMessage));
-            });
-            //aa
             io.to(user.room).emit('newMessage', generateMessage(user.name, newMessage.text));
         }
         
