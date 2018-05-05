@@ -54,7 +54,7 @@ io.on('connection', (socket) => {
 
                 searchMessageForWeather(message, function (callback) {
                     if (callback === 'Request failed with status code 400' || callback.length === 0) {
-                        logToServerLogs('Error');
+                        logToServerLog('Error');
                     } else {
                         resolve(callback);
                     }
