@@ -7,6 +7,7 @@ const { generateMessage, generateLocationMessage } = require('./utils/message');
 const { isRealString } = require('./utils/validation');
 const {Users} = require('./utils/users');
 const { searchMessageForWeather } = require('./utils/nlp');
+const {logToServerLog} = require('./utils/logging');
 
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
@@ -19,11 +20,12 @@ var users = new Users();
 app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
-    console.log('New user connected');
+    logToServerLog('New user connected');
 
     //Rooms
     socket.on('join', (params, callback) => {
         if (!isRealString(params.name) || !isRealString(params.room)) {
+            logToServerLog('Invalid attempt to join chat: Name or room not provided');
             return callback('Name and room name are required');
         }
 
@@ -52,7 +54,7 @@ io.on('connection', (socket) => {
 
                 searchMessageForWeather(message, function (callback) {
                     if (callback === 'Request failed with status code 400' || callback.length === 0) {
-                        console.log('Error');
+                        logToServerLogs('Error');
                     } else {
                         resolve(callback);
                     }
