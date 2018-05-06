@@ -54,7 +54,7 @@ io.on('connection', (socket) => {
 
                 searchMessageForWeather(message, function (callback) {
                     if (callback === 'Request failed with status code 400' || callback.length === 0) {
-                        logToServerLog('Error');
+                        logToServerLog('Error: could not find location');
                     } else {
                         resolve(callback);
                     }
@@ -93,4 +93,4 @@ io.on('connection', (socket) => {
 
 server.listen(port, () => {
     console.log(`Server is up on port ${port}`);
-});
+}); 

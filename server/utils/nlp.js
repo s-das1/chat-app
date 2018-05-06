@@ -1,6 +1,8 @@
 const nlp = require('compromise');
 const axios = require('axios');
 
+var weatherLocation;
+
 var searchMessageForWeather = (message, callback) => {
     var keywordWeather = message.search(/weather/i);
     
@@ -22,14 +24,15 @@ var searchMessageForWeather = (message, callback) => {
       if (response.data.status === 'ZERO_RESULTS') {
         throw new Error('Unable to find that address.');
       }
-      
+
+      weatherLocation = response.data.results[0].formatted_address;
       var lat = response.data.results[0].geometry.location.lat;
       var lng = response.data.results[0].geometry.location.lng;
       var weatherUrl = `https://api.forecast.io/forecast/bf4b3358d7c0f46c179bcc47578e64bf/${lat},${lng}`;
       return axios.get(weatherUrl);
     }).then((response) => {
       
-      var weatherLocation = encodedAddress;
+      
       var temperature = ((response.data.currently.temperature - 32)*(5/9)).toFixed(1);
       var weatherDataMessage = `In ${weatherLocation}, it is currently ${temperature}°C.`;
       
